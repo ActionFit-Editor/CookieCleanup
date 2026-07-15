@@ -1,0 +1,17 @@
+{
+  "name": "com.actionfit.cookie-cleanup",
+  "rootNamespace": "ActionFit.CookieCleanup",
+  "references": [
+    "com.actionfit.content-core",
+    "com.actionfit.time"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

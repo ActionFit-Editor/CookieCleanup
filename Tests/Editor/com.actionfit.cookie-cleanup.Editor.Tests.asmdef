@@ -1,0 +1,25 @@
+{
+  "name": "com.actionfit.cookie-cleanup.Editor.Tests",
+  "rootNamespace": "ActionFit.CookieCleanup.Tests",
+  "references": [
+    "com.actionfit.cookie-cleanup",
+    "com.actionfit.content-core",
+    "com.actionfit.time"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [
+    "UNITY_INCLUDE_TESTS"
+  ],
+  "versionDefines": [],
+  "noEngineReferences": false,
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ]
+}
