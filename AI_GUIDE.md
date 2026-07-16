@@ -4,9 +4,9 @@
 
 - Package ID: `com.actionfit.cookie-cleanup`
 - Display name: ActionFit Cookie Cleanup
-- Repository: `https://github.com/ActionFitGames/CookieCleanup.git`
-- Repository visibility: Private
-- Current package version at generation time: `0.1.0`
+- Repository: `https://github.com/ActionFit-Editor/CookieCleanup.git`
+- Repository visibility: Public
+- Current package version at generation time: `0.1.1`
 - Unity version: `6000.2`
 - Runtime dependency: `com.actionfit.content-core@0.2.0`
 - Runtime dependency: `com.actionfit.time@1.0.2`

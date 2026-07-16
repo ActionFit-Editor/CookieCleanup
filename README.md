@@ -1,15 +1,15 @@
 # ActionFit Cookie Cleanup
 
-`com.actionfit.cookie-cleanup` is a private, code-only CookieCleanup engine. It owns the schedule window, schema-versioned state, deterministic board placement, spray and round transitions, reward transactions, migration input, and restart recovery. The consuming project owns UI, prefabs, sprites, generated CSV/SO assets, unlock rules, analytics transport, Addressables, and inventory adapters.
+`com.actionfit.cookie-cleanup` is a public, code-only CookieCleanup engine. It owns the schedule window, schema-versioned state, deterministic board placement, spray and round transitions, reward transactions, migration input, and restart recovery. The consuming project owns UI, prefabs, sprites, generated CSV/SO assets, unlock rules, analytics transport, Addressables, and inventory adapters.
 
 ## Install
 
-After a separately approved repository and immutable tag exist, add the private Git UPM package to the consuming project:
+After the Public repository and immutable tag are published, add the Git UPM package to the consuming project:
 
 ```json
 {
   "dependencies": {
-    "com.actionfit.cookie-cleanup": "https://github.com/ActionFitGames/CookieCleanup.git#0.1.0"
+    "com.actionfit.cookie-cleanup": "https://github.com/ActionFit-Editor/CookieCleanup.git#0.1.1"
   }
 }
 ```

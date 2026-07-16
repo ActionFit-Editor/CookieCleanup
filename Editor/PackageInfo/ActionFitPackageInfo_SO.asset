@@ -15,20 +15,14 @@ MonoBehaviour:
   _packageId: com.actionfit.cookie-cleanup
   _displayName: ActionFit Cookie Cleanup
   _repoName: CookieCleanup
-  _repositoryVisibility: 1
+  _repositoryVisibility: 0
   _owner: ActionFit
   _status: candidate
   _description: CookieCleanup schedule, deterministic placement, state recovery,
-    and idempotent rewards as a private code-only engine.
-  _releaseNote: "- placement seed, round, foam mask\uB97C \uD558\uB098\uC758 schema-versioned
-    snapshot\uC73C\uB85C \uBCF4\uC874\uD569\uB2C8\uB2E4.\n- \uC2E0\uADDC \uC774\uBCA4\uD2B8\uB294
-    com.actionfit.time@1.0.2\uC640 \uBA85\uC2DC\uC801 UTC+09:00 \uB2EC\uB825\uC744
-    \uC0AC\uC6A9\uD558\uACE0 \uAE30\uC874 \uD65C\uC131 \uC774\uBCA4\uD2B8\uB294 local
-    ticks\uB97C \uC7AC\uD574\uC11D\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4.\n- \uC774\uBCA4\uD2B8
-    \uC778\uC2A4\uD134\uC2A4\uBCC4 \uC548\uC815\uC801\uC778 transaction ID\uC640
-    reward snapshot\uC73C\uB85C \uB77C\uC6B4\uB4DC/\uBC15\uC2A4 \uBCF4\uC0C1 \uC911\uBCF5
-    \uC9C0\uAE09\uC744 \uBC29\uC9C0\uD569\uB2C8\uB2E4.\n- Caution: \uCCAB \uC804\uD658
-    QA\uAC00 \uB05D\uB0A0 \uB54C\uAE4C\uC9C0 \uAE30\uC874 CookieCleanup \uAC1C\uBCC4
-    \uC800\uC7A5 \uD0A4\uC640 \uD504\uB85C\uC81D\uD2B8 UI/\uC5D0\uC14B\uC744 \uC0AD\uC81C\uD558\uC9C0
-    \uC54A\uC2B5\uB2C8\uB2E4."
+    and idempotent rewards as a public code-only engine.
+  _releaseNote: "- \uC800\uC7A5\uC18C \uACF5\uAC1C \uBC94\uC704\uB97C Public\uC73C\uB85C
+    \uC804\uD658\uD558\uACE0 ActionFit-Editor Git UPM \uACBD\uB85C\uB97C \uBC18\uC601\uD588\uC2B5\uB2C8\uB2E4.\n-
+    \uAE30\uC874 Private \uC800\uC7A5\uC18C\uC758 branch/tag \uC804\uCCB4 \uC774\uB825\uC744
+    Public \uC800\uC7A5\uC18C\uB85C \uBE44\uAC15\uC81C \uC774\uC804\uD588\uC2B5\uB2C8\uB2E4.\n-
+    \uB7F0\uD0C0\uC784 API\uC640 \uB3D9\uC791\uC740 \uBCC0\uACBD\uD558\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4."
   _dependenciesOverride: 
