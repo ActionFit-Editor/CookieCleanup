@@ -9,7 +9,7 @@ After the Public repository and immutable tag are published, add the Git UPM pac
 ```json
 {
   "dependencies": {
-    "com.actionfit.cookie-cleanup": "https://github.com/ActionFit-Editor/CookieCleanup.git#0.1.1"
+    "com.actionfit.cookie-cleanup": "https://github.com/ActionFit-Editor/CookieCleanup.git#0.1.2"
   }
 }
 ```
@@ -26,4 +26,4 @@ After the Public repository and immutable tag are published, add the Git UPM pac
 
 The first rollout is additive. Existing Cat Merge scripts remain compatibility facades, and all legacy keys and project assets remain available for rollback.
 
-Runtime dependencies are pinned to `com.actionfit.content-core@0.2.0` and `com.actionfit.time@1.0.2`.
+Runtime dependencies are pinned to `com.actionfit.content-core@0.2.1` and `com.actionfit.time@1.0.3`.

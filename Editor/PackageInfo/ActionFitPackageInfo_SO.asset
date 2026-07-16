@@ -20,9 +20,5 @@ MonoBehaviour:
   _status: candidate
   _description: CookieCleanup schedule, deterministic placement, state recovery,
     and idempotent rewards as a public code-only engine.
-  _releaseNote: "- \uC800\uC7A5\uC18C \uACF5\uAC1C \uBC94\uC704\uB97C Public\uC73C\uB85C
-    \uC804\uD658\uD558\uACE0 ActionFit-Editor Git UPM \uACBD\uB85C\uB97C \uBC18\uC601\uD588\uC2B5\uB2C8\uB2E4.\n-
-    \uAE30\uC874 Private \uC800\uC7A5\uC18C\uC758 branch/tag \uC804\uCCB4 \uC774\uB825\uC744
-    Public \uC800\uC7A5\uC18C\uB85C \uBE44\uAC15\uC81C \uC774\uC804\uD588\uC2B5\uB2C8\uB2E4.\n-
-    \uB7F0\uD0C0\uC784 API\uC640 \uB3D9\uC791\uC740 \uBCC0\uACBD\uD558\uC9C0 \uC54A\uC558\uC2B5\uB2C8\uB2E4."
+  _releaseNote: "- 내부 ActionFit 패키지 의존성을 검증된 최신 태그로 갱신했습니다.\n- 패키지 버전, 설치 예시, AI 가이드와 카탈로그 메타데이터를 함께 맞췄습니다.\n- 기존 런타임 API와 프로젝트 소유 설정은 변경하지 않았습니다."
   _dependenciesOverride: 
