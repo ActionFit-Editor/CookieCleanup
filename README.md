@@ -9,7 +9,7 @@ After the Public repository and immutable tag are published, add the Git UPM pac
 ```json
 {
   "dependencies": {
-    "com.actionfit.cookie-cleanup": "https://github.com/ActionFit-Editor/CookieCleanup.git#0.1.2"
+    "com.actionfit.cookie-cleanup": "https://github.com/ActionFit-Editor/CookieCleanup.git#0.1.3"
   }
 }
 ```
