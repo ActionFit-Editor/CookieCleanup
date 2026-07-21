@@ -61,7 +61,8 @@ namespace ActionFit.CookieCleanup
         public CookieCleanupCatalog Catalog => ResolveCatalog();
         public bool IsEventStarted => _state.eventStarted;
         public bool PendingEnd => _state.pendingEnd;
-        public bool IsEventDay => _schedulePolicy.IsEnabled && _schedulePolicy.IsActiveDay(ServiceNow.DayOfWeek);
+        public bool IsEventDay => _schedulePolicy.IsEnabled
+            && _schedulePolicy.IsActiveDay(_utcClock.GetCurrentTime(_calendarTimeZone).DayOfWeek);
         public bool IsEventActive => _accessPolicy.IsAccessAllowed
             && _schedulePolicy.IsEnabled
             && EventRemainingTime > TimeSpan.Zero;
@@ -75,8 +76,8 @@ namespace ActionFit.CookieCleanup
             {
                 TimeSpan remaining = EventRemainingTime;
                 if (remaining > TimeSpan.Zero) return remaining;
-                return TryGetActiveWindowEndTicks(TimeBasis, out long endTicks)
-                    ? GetRemaining(endTicks)
+                return TryGetActiveWindowEndTicks(CookieCleanupTimeBasis.UtcTicks, out long endTicks)
+                    ? GetRemaining(endTicks, CookieCleanupTimeBasis.UtcTicks)
                     : TimeSpan.Zero;
             }
         }
@@ -374,8 +375,7 @@ namespace ActionFit.CookieCleanup
 
         public TimeSpan GetRemaining(long deadlineTicks)
         {
-            if (deadlineTicks <= 0 || deadlineTicks <= NowTicks) return TimeSpan.Zero;
-            return TimeSpan.FromTicks(deadlineTicks - NowTicks);
+            return GetRemaining(deadlineTicks, TimeBasis);
         }
 
         public int GetElapsedSeconds(long startTicks)
@@ -536,6 +536,15 @@ namespace ActionFit.CookieCleanup
                 ? fallback.Ticks
                 : ConvertServiceTimeToUtcTicks(fallback);
             return endTicks > nowTicks;
+        }
+
+        private TimeSpan GetRemaining(long deadlineTicks, CookieCleanupTimeBasis basis)
+        {
+            long nowTicks = basis == CookieCleanupTimeBasis.LegacyLocalTicks
+                ? _legacyLocalClock.Now.Ticks
+                : _utcClock.UtcNow.Ticks;
+            if (deadlineTicks <= 0 || deadlineTicks <= nowTicks) return TimeSpan.Zero;
+            return TimeSpan.FromTicks(deadlineTicks - nowTicks);
         }
 
         private long ConvertServiceTimeToUtcTicks(DateTime serviceTime)

@@ -6,7 +6,7 @@
 - Display name: ActionFit Cookie Cleanup
 - Repository: `https://github.com/ActionFit-Editor/CookieCleanup.git`
 - Repository visibility: Public
-- Current package version at generation time: `0.2.1`
+- Current package version at generation time: `0.2.2`
 - Unity version: `6000.2`
 - Runtime dependency: `com.actionfit.content-core@0.2.3`
 - Runtime dependency: `com.actionfit.time@1.0.4`
@@ -31,6 +31,7 @@ Consuming-project adapters may translate generated tables, `DataStore`, `TimePro
 - Placement preserves input order, stable area ordering, X/Y/rotation candidate enumeration, `System.Random`, Fisher-Yates consumption, retry number, and first-fit behavior.
 - An active event pins `CatalogVersion` and `BalanceRevision` and has a nonzero placement seed plus a stable event instance ID.
 - New events use UTC ticks and an explicitly injected calendar. Cat Merge selects synchronized UTC plus `TimeZoneInfo.Utc` in server mode, or device-backed UTC plus `TimeZoneInfo.Local` in device mode. Imported active local ticks remain numeric local ticks on their legacy calendar until that event ends.
+- New-event availability and expected duration always use the injected new-event calendar, even when an inactive imported snapshot still records `LegacyLocalTicks`. A rejected start preserves that basis and does not write state.
 - Reward snapshots and `cookie_cleanup:{eventInstanceId}:round:{round}:{rewardKind}` transaction IDs are saved before grant.
 - Grant confirmation is durable before pending reward state is cleared.
 - Normal event end does not erase the shared durable reward ledger; every new event uses a new event instance ID.

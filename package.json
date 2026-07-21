@@ -1,6 +1,6 @@
 {
   "name": "com.actionfit.cookie-cleanup",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "displayName": "ActionFit Cookie Cleanup",
   "description": "Reusable CookieCleanup schedule, deterministic board, durable state, and idempotent reward engine.",
   "unity": "6000.2",

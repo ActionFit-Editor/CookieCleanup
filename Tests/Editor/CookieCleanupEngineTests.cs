@@ -179,6 +179,53 @@ namespace ActionFit.CookieCleanup.Tests
         }
 
         [Test]
+        public void NewEventCalendar_DoesNotUseInactiveLegacyStateBasis()
+        {
+            var rejectedStore = new MemoryStateStore();
+            var rejectedClock = new ManualClock(
+                new DateTime(2026, 7, 12, 20, 0, 0, DateTimeKind.Utc));
+            CookieCleanupEngine rejected = CreateEngine(
+                rejectedStore,
+                rejectedClock,
+                new DateTime(2026, 7, 13, 5, 0, 0),
+                new FixedSeedSource(77),
+                calendarTimeZone: TimeZoneInfo.Utc);
+            Assert.That(rejected.ImportStateIfEmpty(new CookieCleanupImportState
+            {
+                TimeBasis = CookieCleanupTimeBasis.LegacyLocalTicks,
+            }), Is.True);
+            int rejectedSaveCount = rejectedStore.SaveCount;
+
+            Assert.That(rejected.IsEventDay, Is.False);
+            Assert.That(rejected.ExpectedRemainingTime, Is.EqualTo(TimeSpan.Zero));
+            Assert.That(rejected.TryStartEvent(), Is.False);
+            Assert.That(rejected.State.TimeBasis, Is.EqualTo(CookieCleanupTimeBasis.LegacyLocalTicks));
+            Assert.That(rejectedStore.SaveCount, Is.EqualTo(rejectedSaveCount));
+
+            var acceptedStore = new MemoryStateStore();
+            var acceptedClock = new ManualClock(
+                new DateTime(2026, 7, 13, 20, 0, 0, DateTimeKind.Utc));
+            CookieCleanupEngine accepted = CreateEngine(
+                acceptedStore,
+                acceptedClock,
+                new DateTime(2026, 7, 14, 5, 0, 0),
+                new FixedSeedSource(77),
+                calendarTimeZone: TimeZoneInfo.Utc);
+            Assert.That(accepted.ImportStateIfEmpty(new CookieCleanupImportState
+            {
+                TimeBasis = CookieCleanupTimeBasis.LegacyLocalTicks,
+            }), Is.True);
+
+            Assert.That(accepted.IsEventDay, Is.True);
+            Assert.That(accepted.ExpectedRemainingTime, Is.EqualTo(TimeSpan.FromHours(4)));
+            Assert.That(accepted.TryStartEvent(), Is.True);
+            Assert.That(accepted.State.TimeBasis, Is.EqualTo(CookieCleanupTimeBasis.UtcTicks));
+            Assert.That(
+                accepted.State.EventEndTicks,
+                Is.EqualTo(new DateTime(2026, 7, 14, 0, 0, 0, DateTimeKind.Utc).Ticks));
+        }
+
+        [Test]
         public void FoamClear_SpendsAndPersistsMaskAtomically()
         {
             var store = new MemoryStateStore();
@@ -320,9 +367,10 @@ namespace ActionFit.CookieCleanup.Tests
         private sealed class MemoryStateStore : IContentStateStore, IFlushableContentStateStore
         {
             private string _json;
+            public int SaveCount { get; private set; }
             public int FlushCount { get; private set; }
             public bool TryLoad(string contentId, out string json) { json = _json; return json != null; }
-            public void Save(string contentId, string json) { _json = json; }
+            public void Save(string contentId, string json) { _json = json; SaveCount++; }
             public void Delete(string contentId) { _json = null; }
             public void Flush() { FlushCount++; }
         }

@@ -9,7 +9,7 @@ Public 저장소와 불변 태그가 게시된 후 사용하는 프로젝트에 
 ```json
 {
   "dependencies": {
-    "com.actionfit.cookie-cleanup": "https://github.com/ActionFit-Editor/CookieCleanup.git#0.2.1"
+    "com.actionfit.cookie-cleanup": "https://github.com/ActionFit-Editor/CookieCleanup.git#0.2.2"
   }
 }
 ```
@@ -25,6 +25,8 @@ Public 저장소와 불변 태그가 게시된 후 사용하는 프로젝트에 
 - `ICookieCleanupLegacyLocalClock`은 마이그레이션 전 활성 로컬 tick 비교에만 사용합니다.
 
 최초 적용은 기존 구현에 추가하는 방식입니다. 기존 Cat Merge 스크립트는 호환 facade로 유지하며, 모든 레거시 키와 프로젝트 에셋은 롤백을 위해 보존합니다.
+
+비활성 레거시 스냅샷이 남아 있어도 새 이벤트의 활성 요일과 예상 시간은 주입된 신규 달력으로 판단합니다. 진행 중인 레거시 타이머만 기존 숫자 축을 사용하며, 시작 거절은 basis나 저장 상태를 변경하지 않습니다.
 
 canonical CSV는 `Data/CSV/`에 포함되며, 생성된 결과는 소비 프로젝트의 `Assets/_Data/_CookieCleanup/`에 둡니다.
 
