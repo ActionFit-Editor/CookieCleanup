@@ -135,7 +135,7 @@ namespace ActionFit.CookieCleanup.Tests
         }
 
         [Test]
-        public void NewEvent_UsesUtcTicksAndExplicitUtcPlusNineCalendar()
+        public void NewEvent_UsesUtcTicksAndExplicitInjectedCalendar()
         {
             var store = new MemoryStateStore();
             var clock = new ManualClock(new DateTime(2026, 7, 12, 15, 30, 0, DateTimeKind.Utc));
@@ -151,6 +151,30 @@ namespace ActionFit.CookieCleanup.Tests
                 Is.EqualTo(new DateTime(2026, 7, 13, 15, 0, 0, DateTimeKind.Utc).Ticks));
             Assert.That(engine.State.PlacementSeed, Is.EqualTo(77));
             Assert.That(engine.CollectedSpray, Is.EqualTo(10));
+            Assert.That(engine.EventRemainingTime, Is.EqualTo(TimeSpan.FromHours(23.5)));
+        }
+
+        [Test]
+        public void UtcCalendar_UsesUtcWeekdayAndMidnight()
+        {
+            var store = new MemoryStateStore();
+            var clock = new ManualClock(new DateTime(2026, 7, 12, 15, 30, 0, DateTimeKind.Utc));
+            CookieCleanupEngine engine = CreateEngine(
+                store,
+                clock,
+                new DateTime(1999, 1, 1),
+                new FixedSeedSource(77),
+                calendarTimeZone: TimeZoneInfo.Utc);
+
+            Assert.That(engine.IsEventDay, Is.False);
+            Assert.That(engine.TryStartEvent(), Is.False);
+
+            clock.SetUtcNow(new DateTime(2026, 7, 13, 0, 30, 0, DateTimeKind.Utc));
+
+            Assert.That(engine.IsEventDay, Is.True);
+            Assert.That(engine.TryStartEvent(), Is.True);
+            Assert.That(engine.State.EventEndTicks,
+                Is.EqualTo(new DateTime(2026, 7, 14, 0, 0, 0, DateTimeKind.Utc).Ticks));
             Assert.That(engine.EventRemainingTime, Is.EqualTo(TimeSpan.FromHours(23.5)));
         }
 
@@ -197,7 +221,8 @@ namespace ActionFit.CookieCleanup.Tests
             IClock utcClock,
             DateTime legacyNow,
             ICookieCleanupSeedSource seedSource = null,
-            IContentRewardService rewardService = null)
+            IContentRewardService rewardService = null,
+            TimeZoneInfo calendarTimeZone = null)
         {
             CookieCleanupCatalog catalog = CreateCurrentShapeCatalog();
             return new CookieCleanupEngine(
@@ -205,6 +230,11 @@ namespace ActionFit.CookieCleanup.Tests
                 rewardService ?? new MemoryRewardService(),
                 new FixedCatalogResolver(catalog),
                 utcClock,
+                calendarTimeZone ?? TimeZoneInfo.CreateCustomTimeZone(
+                    "CookieCleanupTests+09",
+                    TimeSpan.FromHours(9),
+                    "CookieCleanupTests+09",
+                    "CookieCleanupTests+09"),
                 new FixedLegacyClock(legacyNow),
                 seedSource ?? new FixedSeedSource(123),
                 "tests/cookie-cleanup",

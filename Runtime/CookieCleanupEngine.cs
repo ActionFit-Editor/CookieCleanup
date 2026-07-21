@@ -10,16 +10,11 @@ namespace ActionFit.CookieCleanup
         public const int MinRound = 1;
         public const int MaxBoardCells = 64;
 
-        private static readonly TimeZoneInfo ServiceTimeZone = TimeZoneInfo.CreateCustomTimeZone(
-            "ActionFit.CookieCleanup.UTC+09",
-            TimeSpan.FromHours(9d),
-            "ActionFit Cookie Cleanup UTC+09",
-            "ActionFit Cookie Cleanup UTC+09");
-
         private readonly IContentStateStore _stateStore;
         private readonly IContentRewardService _rewardService;
         private readonly ICookieCleanupCatalogResolver _catalogResolver;
         private readonly IClock _utcClock;
+        private readonly TimeZoneInfo _calendarTimeZone;
         private readonly ICookieCleanupLegacyLocalClock _legacyLocalClock;
         private readonly ICookieCleanupSeedSource _seedSource;
         private readonly ICookieCleanupAccessPolicy _accessPolicy;
@@ -35,6 +30,7 @@ namespace ActionFit.CookieCleanup
             IContentRewardService rewardService,
             ICookieCleanupCatalogResolver catalogResolver,
             IClock utcClock,
+            TimeZoneInfo calendarTimeZone,
             ICookieCleanupLegacyLocalClock legacyLocalClock,
             ICookieCleanupSeedSource seedSource,
             string contentId,
@@ -46,6 +42,7 @@ namespace ActionFit.CookieCleanup
             _rewardService = rewardService ?? throw new ArgumentNullException(nameof(rewardService));
             _catalogResolver = catalogResolver ?? throw new ArgumentNullException(nameof(catalogResolver));
             _utcClock = utcClock ?? throw new ArgumentNullException(nameof(utcClock));
+            _calendarTimeZone = calendarTimeZone ?? throw new ArgumentNullException(nameof(calendarTimeZone));
             _legacyLocalClock = legacyLocalClock ?? throw new ArgumentNullException(nameof(legacyLocalClock));
             _seedSource = seedSource ?? throw new ArgumentNullException(nameof(seedSource));
             _contentId = string.IsNullOrWhiteSpace(contentId)
@@ -100,7 +97,7 @@ namespace ActionFit.CookieCleanup
         private CookieCleanupTimeBasis TimeBasis => (CookieCleanupTimeBasis)_state.timeBasis;
         private DateTime ServiceNow => TimeBasis == CookieCleanupTimeBasis.LegacyLocalTicks
             ? _legacyLocalClock.Now
-            : _utcClock.GetCurrentTime(ServiceTimeZone).DateTime;
+            : _utcClock.GetCurrentTime(_calendarTimeZone).DateTime;
         private long NowTicks => TimeBasis == CookieCleanupTimeBasis.LegacyLocalTicks
             ? _legacyLocalClock.Now.Ticks
             : _utcClock.UtcNow.Ticks;
@@ -512,7 +509,7 @@ namespace ActionFit.CookieCleanup
             endTicks = 0L;
             DateTime serviceNow = basis == CookieCleanupTimeBasis.LegacyLocalTicks
                 ? _legacyLocalClock.Now
-                : _utcClock.GetCurrentTime(ServiceTimeZone).DateTime;
+                : _utcClock.GetCurrentTime(_calendarTimeZone).DateTime;
             long nowTicks = basis == CookieCleanupTimeBasis.LegacyLocalTicks
                 ? _legacyLocalClock.Now.Ticks
                 : _utcClock.UtcNow.Ticks;
@@ -541,10 +538,10 @@ namespace ActionFit.CookieCleanup
             return endTicks > nowTicks;
         }
 
-        private static long ConvertServiceTimeToUtcTicks(DateTime serviceTime)
+        private long ConvertServiceTimeToUtcTicks(DateTime serviceTime)
         {
             DateTime unspecified = DateTime.SpecifyKind(serviceTime, DateTimeKind.Unspecified);
-            return TimeZoneInfo.ConvertTimeToUtc(unspecified, ServiceTimeZone).Ticks;
+            return TimeZoneInfo.ConvertTimeToUtc(unspecified, _calendarTimeZone).Ticks;
         }
 
         private CookieCleanupCatalog ResolveCatalog()

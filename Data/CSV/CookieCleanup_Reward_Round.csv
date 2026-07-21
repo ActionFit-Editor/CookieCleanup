@@ -1,0 +1,12 @@
+﻿쿠키대청소 라운드 클리어 보상을 정의하는 시트입니다. 각 라운드를 완료했을 때 지급할 RewardData 목록과 세그먼트 조건을 관리합니다.,,
+적용 라운드,적용할 네트워크 세그먼트,라운드 클리어 시 지급되는 보상 목록
+Round(int)[key],NetSeg(enum:NetworkSegment)[key],Reward(array:RewardData)
+1,,"[(Energy,401_4,30)]"
+2,,"[(Energy,401_4,50)]"
+3,,"[(BoardItem,70003_4,1)]"
+4,,"[(Dia,601_4,20)]"
+4,Reward,"[(Dia,601_4,10)]"
+5,,"[(Energy,401_4,70)]"
+6,,"[(BoardItem,70003_5,1)]"
+7,,"[(Energy,401_4,80)]"
+8,,"[(BoardItem,70002_6,1)]"

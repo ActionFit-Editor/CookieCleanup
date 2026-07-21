@@ -1,0 +1,4 @@
+﻿쿠키대청소 이벤트가 어떤 요일에 활성화되는지 정의하는 시트입니다. 요일 플래그 enum을 통해 이벤트 노출/진입 가능 요일을 제어하며 실제 이벤트 기간은 별도 스케줄 데이터와 함께 해석됩니다.,,,,,,,
+이벤트가 열리는 요일,월요일 활성 여부,화요일 활성 여부,수요일 활성 여부,목요일 활성 여부,금요일 활성 여부,토요일 활성 여부,일요일 활성 여부
+ActiveDays(enum:DaysOfWeek)[flags][preserve],Mon,Tue,Wed,Thu,Fri,Sat,Sun
+Monday,true,false,false,false,false,false,false

@@ -1,0 +1,8 @@
+﻿쿠키대청소 라운드 중 박스 보상을 정의하는 시트입니다. 라운드별 박스 보상 목록과 네트워크 어트리뷰션 세그먼트별 적용 대상을 관리합니다.,,
+적용 라운드,적용할 네트워크 세그먼트,라운드 중 지급되는 박스 보상 목록
+Round(int)[key],NetSeg(enum:NetworkSegment)[key],Reward(array:RewardData)
+2,,"[(BoardItem,70003_4,2)]"
+4,,"[(Energy,401_4,100)]"
+4,Reward,"[(Energy,401_4,70)]"
+6,,"[(Energy,401_4,100),(Dia,601_4,20)]"
+8,,"[(BoardItem,70001_6,1)]"

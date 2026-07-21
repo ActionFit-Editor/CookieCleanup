@@ -1,0 +1,9 @@
+﻿쿠키대청소 보드에 배치되는 청소 대상 오브젝트의 기본 정보를 정의하는 시트입니다. 오브젝트 ID와 보드 점유 크기 및 기획 확인용 설명을 관리하며 라운드 설정에서 이 ID를 참조합니다.,,
+청소 대상 오브젝트 ID,보드에서 차지하는 칸 크기,기획 확인용 설명
+Id(string),ItemSize(vector2int),Desc(string)
+cookie_cleanup_ob01,"(1,1)",포장된 머그컵
+cookie_cleanup_ob02,"(1,1)",그라인더
+cookie_cleanup_ob03,"(1,2)",주전자
+cookie_cleanup_ob04,"(1,2)",믹서기
+cookie_cleanup_ob05,"(1,3)",스탠딩 조명
+cookie_cleanup_ob06,"(2,2)",커피머신
