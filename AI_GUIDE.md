@@ -6,7 +6,7 @@
 - Display name: ActionFit Cookie Cleanup
 - Repository: `https://github.com/ActionFit-Editor/CookieCleanup.git`
 - Repository visibility: Public
-- Current package version at generation time: `0.2.0`
+- Current package version at generation time: `0.2.1`
 - Unity version: `6000.2`
 - Runtime dependency: `com.actionfit.content-core@0.2.3`
 - Runtime dependency: `com.actionfit.time@1.0.4`
@@ -20,6 +20,8 @@
 Keep the runtime engine project-neutral. The package owns canonical CSV files under `Data/CSV/`, but Runtime must not reference `Assembly-CSharp`, Cat Merge generated table types, Addressables, analytics SDKs, UGUI, DOTween, project persistence APIs, prefabs, or presentation assets.
 
 Consuming-project adapters may translate generated tables, `DataStore`, `TimeProvider`, unlock state, analytics, and `GameItemProvider` into package contracts.
+
+`CookieCleanupCatalogFactory` builds the complete standalone catalog and schedule directly from caller-provided canonical CSV text, including default and `Reward` segments, without `AssetDatabase`, CSV Importer, generated Row/Table types, or project Table SOs. Empty, malformed, duplicate, or unsupported input fails closed. Keep importer-generated outputs under `Assets/_Data/_CookieCleanup/` and verify their parity with `Assets/_Project/Content/Tests/Editor/ContentCatalogImportedSoParityTests.cs`. Machine-readable source and test evidence lives in `Documentation~/StandaloneCatalogEvidence.json`.
 
 ## Invariants
 

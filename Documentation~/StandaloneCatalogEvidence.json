@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "catalogFactory": "Runtime/CookieCleanupCatalogFactory.cs",
+  "parityTest": "Tests/Editor/CookieCleanupStandaloneCatalogParityTests.cs",
+  "csv": [
+    {
+      "path": "Data/CSV/CookieCleanup_EventSettings.csv",
+      "sha256": "a51c296266f3c675acc07ce3d08f875819a36b63b8148d6846800c4c52b95c6b"
+    },
+    {
+      "path": "Data/CSV/CookieCleanup_Object.csv",
+      "sha256": "d1f74d1ba1fccb0d5e059b38dbbfbb2722f0fbf475a441fd554f4e8e9d48aab9"
+    },
+    {
+      "path": "Data/CSV/CookieCleanup_Reward_Box.csv",
+      "sha256": "8357d201deee70f5691725c26c0e7b552794b99213803a42d962c837b8e15501"
+    },
+    {
+      "path": "Data/CSV/CookieCleanup_Reward_Round.csv",
+      "sha256": "6a1b21282d84fa032c0de729f7bd0b047be21b1d7f4117bd0c34be41183fb974"
+    },
+    {
+      "path": "Data/CSV/CookieCleanup_Round_Settings.csv",
+      "sha256": "4f2c90e4a229205c577ca44c3844242c8412295f5e2951e247d0de95d1acc29a"
+    },
+    {
+      "path": "Data/CSV/CookieCleanup_Spray_Order.csv",
+      "sha256": "183965be58f70eb7e84bde94d96c0e2899d8efed5836ee164fb9e8822314930d"
+    }
+  ]
+}

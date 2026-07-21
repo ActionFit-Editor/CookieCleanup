@@ -9,7 +9,7 @@ Public 저장소와 불변 태그가 게시된 후 사용하는 프로젝트에 
 ```json
 {
   "dependencies": {
-    "com.actionfit.cookie-cleanup": "https://github.com/ActionFit-Editor/CookieCleanup.git#0.2.0"
+    "com.actionfit.cookie-cleanup": "https://github.com/ActionFit-Editor/CookieCleanup.git#0.2.1"
   }
 }
 ```
@@ -27,5 +27,23 @@ Public 저장소와 불변 태그가 게시된 후 사용하는 프로젝트에 
 최초 적용은 기존 구현에 추가하는 방식입니다. 기존 Cat Merge 스크립트는 호환 facade로 유지하며, 모든 레거시 키와 프로젝트 에셋은 롤백을 위해 보존합니다.
 
 canonical CSV는 `Data/CSV/`에 포함되며, 생성된 결과는 소비 프로젝트의 `Assets/_Data/_CookieCleanup/`에 둡니다.
+
+## Canonical CSV 독립 구성
+
+`Data/CSV/`의 여섯 파일에서 읽은 `TextAsset.text`를 `CookieCleanupCatalogCsvData`에 전달하고 `CookieCleanupCatalogFactory.Create`를 호출하면 CSV Importer, 생성 Row/Table 코드와 프로젝트 Table SO 없이 `Catalog`과 `SchedulePolicy`를 얻습니다. `segment`를 생략하면 기본 밸런스, `CookieCleanupCatalogFactory.RewardSegment`를 전달하면 Reward 밸런스를 구성합니다. 팩터리는 파일을 자동 탐색하거나 로드하지 않으며 비어 있거나 잘못된 CSV는 예외로 즉시 차단합니다.
+
+```csharp
+CookieCleanupStandaloneCatalog standalone = CookieCleanupCatalogFactory.Create(
+    new CookieCleanupCatalogCsvData(
+        eventSettings.text,
+        objects.text,
+        boxRewards.text,
+        roundRewards.text,
+        rounds.text,
+        sprayOrders.text),
+    CookieCleanupCatalogFactory.RewardSegment);
+```
+
+CSV Importer 생성 결과는 계속 `Assets/_Data/_CookieCleanup/`에 둘 수 있으며, 패키지 팩터리와 기본·Reward `_Data` SO의 동등성은 프로젝트 EditMode 테스트로 검증합니다.
 
 런타임 의존성은 `com.actionfit.content-core@0.2.3`과 `com.actionfit.time@1.0.4`로 고정되어 있습니다.
