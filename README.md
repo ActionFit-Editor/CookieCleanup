@@ -9,7 +9,7 @@ Public 저장소와 불변 태그가 게시된 후 사용하는 프로젝트에 
 ```json
 {
   "dependencies": {
-    "com.actionfit.cookie-cleanup": "https://github.com/ActionFit-Editor/CookieCleanup.git#0.2.2"
+    "com.actionfit.cookie-cleanup": "https://github.com/ActionFit-Editor/CookieCleanup.git#0.2.3"
   }
 }
 ```
@@ -21,7 +21,7 @@ Public 저장소와 불변 태그가 게시된 후 사용하는 프로젝트에 
 - `CookieCleanupPlacementEngine`은 기존 `System.Random`, 후보 순서, Fisher-Yates, 재시도, 회전 및 first-fit 계약을 보존합니다.
 - `IContentStateStore`는 하나의 완전한 런타임 스냅샷을 영속화하며, 중요한 전환은 `IFlushableContentStateStore`를 통해 즉시 기록합니다.
 - `IContentRewardService`는 이벤트 인스턴스 범위의 라운드 및 상자 트랜잭션을 정확히 한 번 지급합니다.
-- `ActionFit.Time.IClock`은 새 이벤트의 UTC를 제공하고 calendar는 생성자에서 명시적으로 주입합니다. server mode는 UTC calendar, device mode는 `TimeZoneInfo.Local`을 사용합니다.
+- `ActionFit.Time.IClock`은 새 이벤트의 UTC를 제공하고 calendar와 24시간 미만의 `calendarDayBoundaryOffset`은 생성자에서 명시적으로 주입합니다. Clock source와 UTC/디바이스 로컬 calendar 선택은 독립적이며, 양수 offset은 각 달력의 논리 자정을 해당 시간만큼 늦춥니다. 기존 생성자는 offset 0을 유지하고 활성 레거시 숫자 tick에는 offset을 적용하지 않습니다.
 - `ICookieCleanupLegacyLocalClock`은 마이그레이션 전 활성 로컬 tick 비교에만 사용합니다.
 
 최초 적용은 기존 구현에 추가하는 방식입니다. 기존 Cat Merge 스크립트는 호환 facade로 유지하며, 모든 레거시 키와 프로젝트 에셋은 롤백을 위해 보존합니다.

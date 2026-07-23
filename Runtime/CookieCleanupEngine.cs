@@ -15,6 +15,7 @@ namespace ActionFit.CookieCleanup
         private readonly ICookieCleanupCatalogResolver _catalogResolver;
         private readonly IClock _utcClock;
         private readonly TimeZoneInfo _calendarTimeZone;
+        private readonly TimeSpan _calendarDayBoundaryOffset;
         private readonly ICookieCleanupLegacyLocalClock _legacyLocalClock;
         private readonly ICookieCleanupSeedSource _seedSource;
         private readonly ICookieCleanupAccessPolicy _accessPolicy;
@@ -37,12 +38,42 @@ namespace ActionFit.CookieCleanup
             ICookieCleanupAccessPolicy accessPolicy,
             ICookieCleanupSchedulePolicy schedulePolicy,
             ICookieCleanupAnalyticsSink analytics = null)
+            : this(
+                stateStore,
+                rewardService,
+                catalogResolver,
+                utcClock,
+                calendarTimeZone,
+                legacyLocalClock,
+                seedSource,
+                contentId,
+                accessPolicy,
+                schedulePolicy,
+                analytics,
+                TimeSpan.Zero)
+        {
+        }
+
+        public CookieCleanupEngine(
+            IContentStateStore stateStore,
+            IContentRewardService rewardService,
+            ICookieCleanupCatalogResolver catalogResolver,
+            IClock utcClock,
+            TimeZoneInfo calendarTimeZone,
+            ICookieCleanupLegacyLocalClock legacyLocalClock,
+            ICookieCleanupSeedSource seedSource,
+            string contentId,
+            ICookieCleanupAccessPolicy accessPolicy,
+            ICookieCleanupSchedulePolicy schedulePolicy,
+            ICookieCleanupAnalyticsSink analytics,
+            TimeSpan calendarDayBoundaryOffset)
         {
             _stateStore = stateStore ?? throw new ArgumentNullException(nameof(stateStore));
             _rewardService = rewardService ?? throw new ArgumentNullException(nameof(rewardService));
             _catalogResolver = catalogResolver ?? throw new ArgumentNullException(nameof(catalogResolver));
             _utcClock = utcClock ?? throw new ArgumentNullException(nameof(utcClock));
             _calendarTimeZone = calendarTimeZone ?? throw new ArgumentNullException(nameof(calendarTimeZone));
+            _calendarDayBoundaryOffset = ValidateCalendarDayBoundaryOffset(calendarDayBoundaryOffset);
             _legacyLocalClock = legacyLocalClock ?? throw new ArgumentNullException(nameof(legacyLocalClock));
             _seedSource = seedSource ?? throw new ArgumentNullException(nameof(seedSource));
             _contentId = string.IsNullOrWhiteSpace(contentId)
@@ -62,7 +93,7 @@ namespace ActionFit.CookieCleanup
         public bool IsEventStarted => _state.eventStarted;
         public bool PendingEnd => _state.pendingEnd;
         public bool IsEventDay => _schedulePolicy.IsEnabled
-            && _schedulePolicy.IsActiveDay(_utcClock.GetCurrentTime(_calendarTimeZone).DayOfWeek);
+            && _schedulePolicy.IsActiveDay(GetCalendarNow(CookieCleanupTimeBasis.UtcTicks).DayOfWeek);
         public bool IsEventActive => _accessPolicy.IsAccessAllowed
             && _schedulePolicy.IsEnabled
             && EventRemainingTime > TimeSpan.Zero;
@@ -98,7 +129,7 @@ namespace ActionFit.CookieCleanup
         private CookieCleanupTimeBasis TimeBasis => (CookieCleanupTimeBasis)_state.timeBasis;
         private DateTime ServiceNow => TimeBasis == CookieCleanupTimeBasis.LegacyLocalTicks
             ? _legacyLocalClock.Now
-            : _utcClock.GetCurrentTime(_calendarTimeZone).DateTime;
+            : GetCalendarNow(CookieCleanupTimeBasis.UtcTicks);
         private long NowTicks => TimeBasis == CookieCleanupTimeBasis.LegacyLocalTicks
             ? _legacyLocalClock.Now.Ticks
             : _utcClock.UtcNow.Ticks;
@@ -509,7 +540,7 @@ namespace ActionFit.CookieCleanup
             endTicks = 0L;
             DateTime serviceNow = basis == CookieCleanupTimeBasis.LegacyLocalTicks
                 ? _legacyLocalClock.Now
-                : _utcClock.GetCurrentTime(_calendarTimeZone).DateTime;
+                : GetCalendarNow(CookieCleanupTimeBasis.UtcTicks);
             long nowTicks = basis == CookieCleanupTimeBasis.LegacyLocalTicks
                 ? _legacyLocalClock.Now.Ticks
                 : _utcClock.UtcNow.Ticks;
@@ -549,8 +580,42 @@ namespace ActionFit.CookieCleanup
 
         private long ConvertServiceTimeToUtcTicks(DateTime serviceTime)
         {
-            DateTime unspecified = DateTime.SpecifyKind(serviceTime, DateTimeKind.Unspecified);
+            DateTime actualBoundaryTime = serviceTime.Add(_calendarDayBoundaryOffset);
+            DateTime unspecified = ResolveValidCalendarTime(actualBoundaryTime);
             return TimeZoneInfo.ConvertTimeToUtc(unspecified, _calendarTimeZone).Ticks;
+        }
+
+        private DateTime GetCalendarNow(CookieCleanupTimeBasis basis)
+        {
+            DateTime calendarNow = basis == CookieCleanupTimeBasis.LegacyLocalTicks
+                ? _legacyLocalClock.Now
+                : _utcClock.GetCurrentTime(_calendarTimeZone).DateTime;
+            return basis == CookieCleanupTimeBasis.LegacyLocalTicks
+                ? calendarNow
+                : calendarNow.Subtract(_calendarDayBoundaryOffset);
+        }
+
+        private DateTime ResolveValidCalendarTime(DateTime calendarTime)
+        {
+            DateTime unspecified = DateTime.SpecifyKind(calendarTime, DateTimeKind.Unspecified);
+            const int maxAdvanceMinutes = 48 * 60;
+            for (int minute = 0; minute <= maxAdvanceMinutes; minute++)
+            {
+                if (!_calendarTimeZone.IsInvalidTime(unspecified)) return unspecified;
+                unspecified = unspecified.AddMinutes(1);
+            }
+
+            throw new InvalidOperationException("Unable to resolve a valid service boundary within 48 hours.");
+        }
+
+        private static TimeSpan ValidateCalendarDayBoundaryOffset(TimeSpan offset)
+        {
+            if (offset < TimeSpan.Zero || offset >= TimeSpan.FromDays(1))
+                throw new ArgumentOutOfRangeException(
+                    nameof(offset),
+                    offset,
+                    "Calendar day boundary offset must be at least zero and less than 24 hours.");
+            return offset;
         }
 
         private CookieCleanupCatalog ResolveCatalog()

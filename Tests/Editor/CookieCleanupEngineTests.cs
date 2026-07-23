@@ -179,6 +179,42 @@ namespace ActionFit.CookieCleanup.Tests
         }
 
         [Test]
+        public void DeviceLocalCalendar_WithNineHourBoundary_ChangesDayAtLocalNine()
+        {
+            TimeZoneInfo deviceLocalTimeZone = TimeZoneInfo.CreateCustomTimeZone(
+                "CookieCleanup.Tests.DeviceLocal.Boundary+09",
+                TimeSpan.FromHours(9d),
+                "Cookie Cleanup Tests Device Local Boundary +09",
+                "Cookie Cleanup Tests Device Local Boundary +09");
+            TimeSpan boundaryOffset = TimeSpan.FromHours(9d);
+            var beforeClock = new ManualClock(
+                new DateTime(2026, 7, 12, 23, 59, 0, DateTimeKind.Utc));
+            var atClock = new ManualClock(
+                new DateTime(2026, 7, 13, 0, 0, 0, DateTimeKind.Utc));
+            CookieCleanupEngine beforeBoundary = CreateEngine(
+                new MemoryStateStore(),
+                beforeClock,
+                new DateTime(1999, 1, 1),
+                calendarTimeZone: deviceLocalTimeZone,
+                calendarDayBoundaryOffset: boundaryOffset);
+            CookieCleanupEngine atBoundary = CreateEngine(
+                new MemoryStateStore(),
+                atClock,
+                new DateTime(1999, 1, 1),
+                calendarTimeZone: deviceLocalTimeZone,
+                calendarDayBoundaryOffset: boundaryOffset);
+
+            Assert.That(beforeBoundary.IsEventDay, Is.False);
+            Assert.That(beforeBoundary.TryStartEvent(), Is.False);
+            Assert.That(atBoundary.IsEventDay, Is.True);
+            Assert.That(atBoundary.TryStartEvent(), Is.True);
+            Assert.That(
+                atBoundary.EventEndTicks,
+                Is.EqualTo(new DateTime(2026, 7, 14, 0, 0, 0, DateTimeKind.Utc).Ticks));
+            Assert.That(atBoundary.EventRemainingTime, Is.EqualTo(TimeSpan.FromHours(24)));
+        }
+
+        [Test]
         public void NewEventCalendar_DoesNotUseInactiveLegacyStateBasis()
         {
             var rejectedStore = new MemoryStateStore();
@@ -269,7 +305,8 @@ namespace ActionFit.CookieCleanup.Tests
             DateTime legacyNow,
             ICookieCleanupSeedSource seedSource = null,
             IContentRewardService rewardService = null,
-            TimeZoneInfo calendarTimeZone = null)
+            TimeZoneInfo calendarTimeZone = null,
+            TimeSpan? calendarDayBoundaryOffset = null)
         {
             CookieCleanupCatalog catalog = CreateCurrentShapeCatalog();
             return new CookieCleanupEngine(
@@ -286,7 +323,9 @@ namespace ActionFit.CookieCleanup.Tests
                 seedSource ?? new FixedSeedSource(123),
                 "tests/cookie-cleanup",
                 new AllowCookieCleanupAccessPolicy(),
-                new MondaySchedule());
+                new MondaySchedule(),
+                null,
+                calendarDayBoundaryOffset ?? TimeSpan.Zero);
         }
 
         private static CookieCleanupCatalog CreateCurrentShapeCatalog()
