@@ -215,6 +215,64 @@ namespace ActionFit.CookieCleanup.Tests
         }
 
         [Test]
+        public void UtcCalendar_WithNegativeNineBoundary_ChangesDayAtUtcFifteen()
+        {
+            TimeSpan boundaryOffset = TimeSpan.FromHours(-9d);
+            var beforeClock = new ManualClock(
+                new DateTime(2026, 7, 12, 14, 59, 0, DateTimeKind.Utc));
+            var atClock = new ManualClock(
+                new DateTime(2026, 7, 12, 15, 0, 0, DateTimeKind.Utc));
+            CookieCleanupEngine beforeBoundary = CreateEngine(
+                new MemoryStateStore(),
+                beforeClock,
+                new DateTime(1999, 1, 1),
+                calendarTimeZone: TimeZoneInfo.Utc,
+                calendarDayBoundaryOffset: boundaryOffset);
+            CookieCleanupEngine atBoundary = CreateEngine(
+                new MemoryStateStore(),
+                atClock,
+                new DateTime(1999, 1, 1),
+                calendarTimeZone: TimeZoneInfo.Utc,
+                calendarDayBoundaryOffset: boundaryOffset);
+
+            Assert.That(beforeBoundary.IsEventDay, Is.False);
+            Assert.That(beforeBoundary.TryStartEvent(), Is.False);
+            Assert.That(atBoundary.IsEventDay, Is.True);
+            Assert.That(atBoundary.TryStartEvent(), Is.True);
+            Assert.That(
+                atBoundary.EventEndTicks,
+                Is.EqualTo(new DateTime(2026, 7, 13, 15, 0, 0, DateTimeKind.Utc).Ticks));
+            Assert.That(atBoundary.EventRemainingTime, Is.EqualTo(TimeSpan.FromHours(24)));
+        }
+
+        [Test]
+        public void ConfigureCalendar_RuntimeZoneChangeUsesNewPolicyForNewEvent()
+        {
+            var clock = new ManualClock(
+                new DateTime(2026, 7, 12, 20, 0, 0, DateTimeKind.Utc));
+            TimeZoneInfo positiveNine = TimeZoneInfo.CreateCustomTimeZone(
+                "CookieCleanup.Tests.Runtime.Positive09",
+                TimeSpan.FromHours(9),
+                "Cookie Cleanup Tests Runtime Positive 09",
+                "Cookie Cleanup Tests Runtime Positive 09");
+            CookieCleanupEngine engine = CreateEngine(
+                new MemoryStateStore(),
+                clock,
+                new DateTime(1999, 1, 1),
+                calendarTimeZone: TimeZoneInfo.Utc);
+
+            Assert.That(engine.IsEventDay, Is.False);
+
+            engine.ConfigureCalendar(positiveNine, TimeSpan.Zero);
+
+            Assert.That(engine.IsEventDay, Is.True);
+            Assert.That(engine.TryStartEvent(), Is.True);
+            long activeDeadline = engine.EventEndTicks;
+            engine.ConfigureCalendar(TimeZoneInfo.Utc, TimeSpan.FromHours(-9));
+            Assert.That(engine.EventEndTicks, Is.EqualTo(activeDeadline));
+        }
+
+        [Test]
         public void NewEventCalendar_DoesNotUseInactiveLegacyStateBasis()
         {
             var rejectedStore = new MemoryStateStore();

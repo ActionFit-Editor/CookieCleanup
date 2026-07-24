@@ -6,7 +6,7 @@
 - Display name: ActionFit Cookie Cleanup
 - Repository: `https://github.com/ActionFit-Editor/CookieCleanup.git`
 - Repository visibility: Public
-- Current package version at generation time: `0.2.3`
+- Current package version at generation time: `0.2.4`
 - Unity version: `6000.2`
 - Runtime dependency: `com.actionfit.content-core@0.2.3`
 - Runtime dependency: `com.actionfit.time@1.0.4`
@@ -30,8 +30,9 @@ Consuming-project adapters may translate generated tables, `DataStore`, `TimePro
 - Boards are limited to 64 cells; out-of-range mask bits and invalid catalogs are rejected.
 - Placement preserves input order, stable area ordering, X/Y/rotation candidate enumeration, `System.Random`, Fisher-Yates consumption, retry number, and first-fit behavior.
 - An active event pins `CatalogVersion` and `BalanceRevision` and has a nonzero placement seed plus a stable event instance ID.
-- New events use UTC ticks and an explicitly injected calendar plus optional `calendarDayBoundaryOffset`. The consuming project selects its trusted clock independently from UTC or device-local calendar policy. A positive offset below 24 hours moves logical midnight later by subtracting it for date evaluation and adding it for deadline conversion.
+- New events use UTC ticks and an explicitly injected calendar plus optional signed `calendarDayBoundaryOffset`. The consuming project selects its trusted clock independently from UTC or device-local calendar policy. Calendar evaluation subtracts the offset and deadline conversion adds it; valid values are strictly between -24 and +24 hours.
 - New-event availability and expected duration always use the injected new-event calendar and boundary, even when an inactive imported snapshot still records `LegacyLocalTicks`. Existing constructors use zero offset. A rejected start preserves that basis and does not write state; imported active local ticks never inherit the new offset.
+- `ConfigureCalendar` may replace the new-event zone and signed boundary after a device-zone refresh; it never rewrites active deadline ticks or their persisted basis.
 - Reward snapshots and `cookie_cleanup:{eventInstanceId}:round:{round}:{rewardKind}` transaction IDs are saved before grant.
 - Grant confirmation is durable before pending reward state is cleared.
 - Normal event end does not erase the shared durable reward ledger; every new event uses a new event instance ID.

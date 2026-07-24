@@ -9,7 +9,7 @@ Public 저장소와 불변 태그가 게시된 후 사용하는 프로젝트에 
 ```json
 {
   "dependencies": {
-    "com.actionfit.cookie-cleanup": "https://github.com/ActionFit-Editor/CookieCleanup.git#0.2.3"
+    "com.actionfit.cookie-cleanup": "https://github.com/ActionFit-Editor/CookieCleanup.git#0.2.4"
   }
 }
 ```

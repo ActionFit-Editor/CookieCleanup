@@ -20,11 +20,9 @@ MonoBehaviour:
   _status: candidate
   _description: CookieCleanup schedule, deterministic placement, state recovery,
     and idempotent rewards as a public code-only engine.
-  _releaseNote: "- `CookieCleanupEngine`\uC5D0 \uC120\uD0DD\uD615 `calendarDayBoundaryOffset`
-    \uC0DD\uC131\uC790 \uC624\uBC84\uB85C\uB4DC\uB97C \uCD94\uAC00\uD588\uC2B5\uB2C8\uB2E4.\n-
-    \uC591\uC218 offset\uB9CC\uD07C \uB17C\uB9AC \uC790\uC815\uC744 \uB2A6\uCDB0
-    9\uC2DC\uAC04\uC774\uBA74 \uAC01 \uB85C\uCEEC calendar\uC758 09:00\uC5D0 \uB0A0\uC9DC\uAC00
-    \uBC14\uB01D\uB2C8\uB2E4.\n- Caution: \uAE30\uC874 \uC0DD\uC131\uC790\uB294 offset
-    0\uC744 \uC720\uC9C0\uD558\uBA70 active UTC/legacy deadline tick\uC740 \uB2E4\uC2DC
-    \uACC4\uC0B0\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."
+  _releaseNote: "- `calendarDayBoundaryOffset`\uC774 -24\uC2DC\uAC04 \uCD08\uACFC,
+    +24\uC2DC\uAC04 \uBBF8\uB9CC\uC758 signed \uAC12\uC744 \uC9C0\uC6D0\uD569\uB2C8\uB2E4.\n-
+    `ConfigureCalendar`\uB85C \uC2E4\uD589 \uC911 \uC0C8 \uC774\uBCA4\uD2B8 \uB2EC\uB825\uC744
+    \uAC31\uC2E0\uD560 \uC218 \uC788\uC73C\uBA70, active UTC/legacy deadline tick\uC740
+    \uB2E4\uC2DC \uACC4\uC0B0\uD558\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4."
   _dependenciesOverride: 
